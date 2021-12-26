@@ -1,18 +1,43 @@
-const User = require('../../models/User')
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
+const { SECRET_KEY } = require("../../config");
+const User = require("../../models/User");
 
 module.exports = {
-  Query: {
-    getUsers() {
-      const data = [
-        {
-          username: "Soham",
-          password: "soham_123",
-          email: "s@t.com",
-          createdAt: "2020-12-09",
-        },
-      ];
+  Mutation: {
+    async register(
+      _,
+      { registerInput: { username, email, password, confirmPassword } },
+      context,
+      info
+    ) {
+      password = await bcrypt.hash(password, 12);
 
-      return data;
-    },
-  },
+      const newUser = new User({
+        email,
+        password,
+        username,
+        createdAt: new Date().toISOString()
+      });
+
+      const res = await newUser.save();
+
+      const token = jwt.sign(
+        {
+          id: res.id,
+          email: res.email,
+          username: res.username,
+        },
+        SECRET_KEY,
+        { expiresIn: "1h" }
+      );
+
+      return {
+        ...res._doc,
+        id: res._id,
+        token
+      };
+    }
+  }
 };

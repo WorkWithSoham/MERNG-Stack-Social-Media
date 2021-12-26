@@ -1,4 +1,4 @@
-const { gql } = require('graphql-tag');
+const { gql } = require("graphql-tag");
 
 module.exports = gql`
   type Post {
@@ -7,12 +7,24 @@ module.exports = gql`
     createdAt: String!
     username: String!
   }
-
+  
   type User {
+    id: ID!
+    createdAt: String!
+    username: String!
+    email: String!
+    token: String!
+  }
+
+  input RegisterInput{
     username: String!
     password: String!
+    confirmPassword: String!
     email: String!
-    createdAt: String!
+  }
+
+  type Mutation {
+    register ( registerInput: RegisterInput): User!
   }
 
   type Query {
@@ -20,5 +32,3 @@ module.exports = gql`
     getUsers: [User]
   }
 `;
-
-
