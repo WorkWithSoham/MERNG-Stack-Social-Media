@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom";
-import "./index.css";
 import ApolloProvider from './ApolloProvider'
+import "./index.css";
 
 ReactDOM.render(ApolloProvider, document.getElementById("root"));
